@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">RxAndroid Test</string>
+
+    <string name="navigation_drawer_close">Закрыть навигационную панель</string>
+    <string name="navigation_drawer_open">Открыть навигационную панель</string>
+
+    <string name="action_settings">Настройки</string>
+
+    <string name="offer_price">Цена: %s</string>
+    <string name="offer_weight">Вес: %s</string>
+    <string name="address">Адрес:</string>
+    <string name="marker_title">Вы здесь!</string>
+    <string name="title_for_empty_state">Нет сети</string>
+
+</resources>

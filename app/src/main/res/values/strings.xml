@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">RxAndroid Test</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="offer_price">Price: %s</string>
+    <string name="offer_weight">Weight: %s</string>
+    <string name="address">Address:</string>
+    <string name="marker_title">You are here!</string>
+    <string name="title_for_empty_state">No network connection</string>
+</resources>
