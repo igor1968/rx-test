@@ -230,7 +230,7 @@ public class LocationFragment extends Fragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSION) {
             final HashSet<String> grantedPermissions = new HashSet<>();
             for (int i = 0 ; i < permissions.length; i++)
