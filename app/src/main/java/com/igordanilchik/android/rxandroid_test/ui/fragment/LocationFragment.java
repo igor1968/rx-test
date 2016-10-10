@@ -27,8 +27,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.igordanilchik.android.rxandroid_test.R;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -100,11 +100,13 @@ public class LocationFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         if (googleMap != null &&
                 ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             googleMap.setMyLocationEnabled(false);
         }
+
         if (mapView != null) {
             mapView.onDestroy();
         }
@@ -210,48 +212,29 @@ public class LocationFragment extends Fragment {
                 .setAction("Action", null).show();
     }
 
+
     private void updateMap(@Nullable Location location) {
-        if (ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-            ActivityCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION);
-        } else {
-            UiSettings settings = googleMap.getUiSettings();
-            settings.setZoomControlsEnabled(true);
-            googleMap.setMyLocationEnabled(true);
+        RxPermissions.getInstance(getActivity())
+                .request(Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                .subscribe(granted -> {
+                    if (granted) {
+                        UiSettings settings = googleMap.getUiSettings();
+                        settings.setZoomControlsEnabled(true);
+                        //noinspection MissingPermission
+                        googleMap.setMyLocationEnabled(true);
 
-            if (location == null) {
-                updatableLocationSubscription = requestUpdatableLocation();
-            } else {
-                updateContent(location);
-            }
-        }
-    }
+                        if (location == null) {
+                            updatableLocationSubscription = requestUpdatableLocation();
+                        } else {
+                            updateContent(location);
+                        }
+                    } else {
+                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Location permission denied", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                });
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_PERMISSION) {
-            final HashSet<String> grantedPermissions = new HashSet<>();
-            for (int i = 0 ; i < permissions.length; i++)
-            {
-                String permission = permissions[i];
-                int result = grantResults[i];
-                if (result == PackageManager.PERMISSION_GRANTED)
-                {
-                    grantedPermissions.add(permission);
-                }
-            }
-
-            if (grantedPermissions.contains(Manifest.permission.ACCESS_FINE_LOCATION) &&
-                grantedPermissions.contains(Manifest.permission.ACCESS_COARSE_LOCATION))
-            {
-                updateMap(currentLocation);
-            } else {
-                Snackbar.make(getActivity().findViewById(android.R.id.content), "Location permission denied", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        }
     }
 
     private void cameraSettings(LatLng latLng) {

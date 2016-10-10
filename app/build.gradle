@@ -61,10 +61,11 @@ dependencies {
     compile 'org.parceler:parceler-api:1.1.5'
     compile 'com.github.bumptech.glide:glide:3.7.0'
 
-    compile 'com.google.android.gms:play-services-maps:9.6.0'
-    compile 'com.google.android.gms:play-services-location:9.6.0'
+    compile 'com.google.android.gms:play-services-maps:9.6.1'
+    compile 'com.google.android.gms:play-services-location:9.6.1'
 
     compile 'pl.charmas.android:android-reactive-location:0.9@aar'
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.1@aar'
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     annotationProcessor 'org.parceler:parceler-api:1.1.5'
