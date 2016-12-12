@@ -15,6 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igordanilchik.android.rxandroid_test.R;
 import com.igordanilchik.android.rxandroid_test.model.Offer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,38 +27,12 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
 
     private static final String LOG_TAG = CategoriesAdapter.class.getSimpleName();
     @NonNull
-    private List<Offer> offers;
-    @NonNull
-    private Context context;
-
+    private List<Offer> dataset = new ArrayList<>();
     @NonNull
     private final PublishSubject<Offer> onClickSubject = PublishSubject.create();
-
     @NonNull
     public Observable<Offer> getPositionClicks() {
         return onClickSubject.asObservable();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.offer_name)
-        TextView name;
-        @BindView(R.id.offer_image)
-        ImageView image;
-        @BindView(R.id.offer_weight)
-        TextView weight;
-        @BindView(R.id.offer_price)
-        TextView price;
-
-        public ViewHolder(final View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-    public OffersAdapter(@NonNull Context ctx, @NonNull List<Offer> myDataset) {
-        offers = myDataset;
-        context = ctx;
     }
 
     @Override
@@ -70,19 +45,22 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.itemView.setOnClickListener(v -> onClickSubject.onNext(offers.get(position)));
+        // If a context is needed, it can be retrieved
+        // from the ViewHolder's root view.
+        Context context = holder.itemView.getContext();
+        holder.itemView.setOnClickListener(v -> onClickSubject.onNext(dataset.get(position)));
 
-        holder.name.setText(offers.get(position).getName());
-        holder.price.setText(context.getString(R.string.offer_price, offers.get(position).getPrice()));
+        holder.name.setText(dataset.get(position).getName());
+        holder.price.setText(context.getString(R.string.offer_price, dataset.get(position).getPrice()));
 
-        if (offers.get(position).getParam() != null) {
-            String weight = offers.get(position).getParam().get("Вес");
+        if (dataset.get(position).getParam() != null) {
+            String weight = dataset.get(position).getParam().get(context.getString(R.string.param_name_weight));
             if (weight != null) {
                 holder.weight.setText(context.getString(R.string.offer_weight, weight));
             }
         }
 
-        String url = offers.get(position).getPictureUrl();
+        String url = dataset.get(position).getPictureUrl();
         Glide.with(context)
                 .load(url)
                 .fitCenter()
@@ -95,6 +73,29 @@ public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return offers.size();
+        return dataset.size();
+    }
+
+    public void update(@NonNull List<Offer> offers) {
+        dataset.clear();
+        dataset.addAll(offers);
+        notifyDataSetChanged();
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.offer_name)
+        TextView name;
+        @BindView(R.id.offer_image)
+        ImageView image;
+        @BindView(R.id.offer_weight)
+        TextView weight;
+        @BindView(R.id.offer_price)
+        TextView price;
+
+        ViewHolder(final View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 }

@@ -17,6 +17,8 @@ allprojects {
     repositories {
         jcenter()
         mavenCentral()
+        // need by RxCache
+        maven { url "https://jitpack.io" }
     }
 }
 

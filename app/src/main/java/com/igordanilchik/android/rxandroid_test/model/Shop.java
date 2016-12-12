@@ -1,12 +1,10 @@
 package com.igordanilchik.android.rxandroid_test.model;
 
-import org.parceler.Parcel;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 
 import java.util.List;
 
-@Parcel
 @Root(name = "shop", strict = false)
 public class Shop {
 

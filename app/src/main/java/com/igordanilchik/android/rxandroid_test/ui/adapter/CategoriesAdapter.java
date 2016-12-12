@@ -15,6 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igordanilchik.android.rxandroid_test.R;
 import com.igordanilchik.android.rxandroid_test.model.Category;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,34 +27,12 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     private static final String LOG_TAG = CategoriesAdapter.class.getSimpleName();
     @NonNull
-    private List<Category> categories;
-    @NonNull
-    private Context context;
-
+    private List<Category> dataset = new ArrayList<>();
     @NonNull
     private final PublishSubject<Category> onClickSubject = PublishSubject.create();
-
     @NonNull
     public Observable<Category> getPositionClicks() {
         return onClickSubject.asObservable();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.category_title)
-        TextView title;
-        @BindView(R.id.category_image)
-        ImageView icon;
-
-        public ViewHolder(final View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
-
-    public CategoriesAdapter(@NonNull Context ctx, @NonNull List<Category> myDataset) {
-        categories = myDataset;
-        context = ctx;
     }
 
     @Override
@@ -65,10 +44,14 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     }
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.itemView.setOnClickListener(v -> onClickSubject.onNext(categories.get(position)));
+        // If a context is needed, it can be retrieved
+        // from the ViewHolder's root view.
+        Context context = holder.itemView.getContext();
 
-        holder.title.setText(categories.get(position).getTitle());
-        String url = categories.get(position).getPictureUrl();
+        holder.itemView.setOnClickListener(v -> onClickSubject.onNext(dataset.get(position)));
+
+        holder.title.setText(dataset.get(position).getTitle());
+        String url = dataset.get(position).getPictureUrl();
         Glide.with(context)
                 .load(url)
                 .fitCenter()
@@ -81,6 +64,24 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return categories.size();
+        return dataset.size();
+    }
+
+    public void update(@NonNull List<Category> categories) {
+        dataset.clear();
+        dataset.addAll(categories);
+        notifyDataSetChanged();
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.category_title)
+        TextView title;
+        @BindView(R.id.category_image)
+        ImageView icon;
+
+        ViewHolder(final View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 }

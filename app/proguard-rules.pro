@@ -15,3 +15,5 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontwarn io.rx_cache.internal.**
+-keepclassmembers enum io.rx_cache.Source { *; }

@@ -11,9 +11,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    packagingOptions {
-        exclude 'META-INF/services/javax.annotation.processing.Processor'  // butterknife
-    }
     defaultConfig {
         applicationId "com.igordanilchik.android.rxandroid_test"
         minSdkVersion 15
@@ -24,9 +21,10 @@ android {
             enabled false
         }
     }
+
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -60,15 +58,23 @@ dependencies {
         exclude group: 'xpp3', module: 'xpp3'
     }
     compile 'com.dmitrymalkovich.android:material-design-dimens:1.2'
-    compile 'org.parceler:parceler-api:1.1.5'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
 
-    compile 'com.google.android.gms:play-services-maps:10.0.1'
-    compile 'com.google.android.gms:play-services-location:10.0.1'
+    compile 'com.google.android.gms:play-services-maps:9.4.0'
+    compile 'com.google.android.gms:play-services-location:9.4.0'
 
-    compile 'pl.charmas.android:android-reactive-location:0.9@aar'
-    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.1@aar'
+    compile 'pl.charmas.android:android-reactive-location:0.10@aar'
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.0@aar'
+
+    compile 'com.github.VictorAlbertos.RxCache:runtime:1.6.9'
+    compile 'com.github.VictorAlbertos.Jolyglot:jackson:0.0.3'
 
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    apt 'org.parceler:parceler-api:1.1.5'
+}
+
+android {
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
 }

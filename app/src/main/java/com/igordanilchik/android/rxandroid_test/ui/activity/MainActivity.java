@@ -1,9 +1,7 @@
 package com.igordanilchik.android.rxandroid_test.ui.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,30 +13,32 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.igordanilchik.android.rxandroid_test.R;
+import com.igordanilchik.android.rxandroid_test.data.Repository;
+import com.igordanilchik.android.rxandroid_test.ui.ViewContract;
 import com.igordanilchik.android.rxandroid_test.ui.fragment.CategoriesFragment;
 import com.igordanilchik.android.rxandroid_test.ui.fragment.LocationFragment;
+import com.igordanilchik.android.rxandroid_test.ui.fragment.OfferFragment;
+import com.igordanilchik.android.rxandroid_test.ui.fragment.OffersFragment;
 import com.igordanilchik.android.rxandroid_test.utils.FragmentUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements ViewContract {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    public static final String ARG_DATA = "ARG_DATA";
-    private static final String KEY_ONLY_MAP = "KEY_ONLY_MAP";
+
+    public static final String KEY_ONLY_MAP = "KEY_ONLY_MAP";
+    public static final String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
+    public static final String ARG_OFFER_ID = "ARG_OFFER_ID";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
     private boolean onlyMapIsDisplayed;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -76,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         outState.putBoolean(KEY_ONLY_MAP, onlyMapIsDisplayed);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -142,5 +141,21 @@ public class MainActivity extends AppCompatActivity {
 
         //drawer.closeDrawers();
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    public Repository getRepository() {
+        return Repository.getRepository(getFilesDir());
+    }
+
+    @Override
+    public void showCategory(int categoryId) {
+        OffersFragment fragment = OffersFragment.newInstance(categoryId);
+        FragmentUtils.replaceFragment(this, R.id.frame_content, fragment, true);
+    }
+
+    @Override
+    public void showOffer(int offerId) {
+        OfferFragment fragment = OfferFragment.newInstance(offerId);
+        FragmentUtils.replaceFragment(this, R.id.frame_content, fragment, true);
     }
 }

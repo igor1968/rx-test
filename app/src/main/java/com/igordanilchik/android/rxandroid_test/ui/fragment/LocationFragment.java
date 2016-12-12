@@ -214,7 +214,7 @@ public class LocationFragment extends Fragment {
 
 
     private void updateMap(@Nullable Location location) {
-        RxPermissions.getInstance(getActivity())
+        new RxPermissions(getActivity())
                 .request(Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION)
                 .subscribe(granted -> {
