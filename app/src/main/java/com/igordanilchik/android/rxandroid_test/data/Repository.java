@@ -3,6 +3,7 @@ package com.igordanilchik.android.rxandroid_test.data;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.igordanilchik.android.rxandroid_test.BuildConfig;
 import com.igordanilchik.android.rxandroid_test.api.CacheProviders;
 import com.igordanilchik.android.rxandroid_test.api.ClientApi;
@@ -75,6 +76,7 @@ public class Repository {
                 .create(ClientApi.class);
     }
 
+    @RxLogObservable
     public Observable<Catalogue> getCatalogue(final boolean update) {
         return providers.getCatalogueEvictProvider(getRemoteCatalogue(), new EvictProvider(update));
     }

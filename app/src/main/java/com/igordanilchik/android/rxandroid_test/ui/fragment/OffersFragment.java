@@ -11,17 +11,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fernandocejas.frodo.annotation.RxLogSubscriber;
 import com.igordanilchik.android.rxandroid_test.R;
 import com.igordanilchik.android.rxandroid_test.model.Catalogue;
+import com.igordanilchik.android.rxandroid_test.model.Offer;
 import com.igordanilchik.android.rxandroid_test.ui.ViewContract;
 import com.igordanilchik.android.rxandroid_test.ui.activity.MainActivity;
 import com.igordanilchik.android.rxandroid_test.ui.adapter.OffersAdapter;
 import com.igordanilchik.android.rxandroid_test.utils.DividerItemDecoration;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -99,6 +104,8 @@ public class OffersFragment extends Fragment {
         unbinder.unbind();
     }
 
+
+
     private void requestData() {
         subscription.unsubscribe();
         Log.d(LOG_TAG, "Observer unsubscribed");
@@ -115,7 +122,9 @@ public class OffersFragment extends Fragment {
                     .flatMap(Observable::from)
                     .filter(offer -> offer.getCategoryId() == categoryId)
                     .toList()
-                    .subscribe(offers -> adapter.update(offers));
+                    .subscribe(new SampleSubscriber());
+                    //just for testing @RxLogSubscriber
+                    //.subscribe(offers -> adapter.update(offers));
 
             Log.d(LOG_TAG, "Observer subscribed");
         }
@@ -124,6 +133,24 @@ public class OffersFragment extends Fragment {
     private void offerSelected(int offerId) {
         if (getActivity() instanceof ViewContract) {
             ((ViewContract)getActivity()).showOffer(offerId);
+        }
+    }
+
+    @RxLogSubscriber
+    private class SampleSubscriber extends Subscriber<List<Offer>> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+
+        @Override
+        public void onNext(List<Offer> offers) {
+            adapter.update(offers);
         }
     }
 }
